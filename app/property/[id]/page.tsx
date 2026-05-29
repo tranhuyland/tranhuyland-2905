@@ -1,43 +1,36 @@
-import Image from 'next/image';
-import { fetchProperties } from '@/lib/fetchProperties';
+// Đây là code dành cho file: app/property/[id]/page.tsx
 
-export default async function PropertyPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const properties: any = await fetchProperties();
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
-  const property = properties.find(
-    (item: any) => String(item.id) === params.id
-  );
+// 1. Định nghĩa params là một Promise theo chuẩn Next.js 15
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
 
-  const image = property?.anh?.split(',')[0];
+// 2. Thêm "async" vào hàm component
+export default async function PropertyDetailPage({ params }: PageProps) {
+  // 3. Dùng "await" để lấy id ra một cách bất đồng bộ
+  const { id } = await params;
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-10">
-      <div className="relative aspect-video rounded-3xl overflow-hidden mb-8">
-        <Image
-          src={image}
-          alt={property.tieude}
-          fill
-          className="object-cover"
-        />
+    <>
+      <Header />
+      
+      <div style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', minHeight: '60vh' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '16px' }}>
+          Chi tiết bất động sản
+        </h1>
+        <p style={{ backgroundColor: '#f3f4f6', padding: '12px', borderRadius: '6px', inlineSize: 'fit-content' }}>
+          Đang xem bất động sản có ID: <strong>{id}</strong>
+        </p>
+
+        {/* Bạn có thể chèn thêm các component chi tiết của bạn tại đây */}
       </div>
 
-      <h1 className="text-4xl font-extrabold mb-4">
-        {property.tieude}
-      </h1>
-
-      <div className="mb-8">
-        <span className="bg-amber-100 text-amber-700 px-5 py-3 rounded-2xl font-bold">
-          {property.gia}
-        </span>
-      </div>
-
-      <p className="text-slate-600 whitespace-pre-line">
-        {property.moTa}
-      </p>
-    </main>
+      <Footer />
+    </>
   );
 }
